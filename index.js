@@ -3,6 +3,8 @@ require('dotenv').config()
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var multer = require('multer');
 var md5 = require('md5');
 var app = express();
@@ -57,7 +59,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             })
         })
 
-        app.get("/order/myOrder", function (req, res) {
+        app.post("/order/myOrder", function (req, res) {
             var collection = myMongoClient.db("FlashShop").collection("order");
             collection.find({ playerID: req.body.playerID }).toArray(function (err, data) { //find() er vitor obj akare condition o apply kora jay. jemon, {ID : "191-35-2640"}
                 if (err || data.length == 0) {
@@ -214,11 +216,13 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             )
         })
 
-        app.get("/package/singlePackage", function (req, res) {
+        app.post("/package/singlePackage", function (req, res) {
             var collection = myMongoClient.db("FlashShop").collection("package");
             let id = new ObjectId(req.body._id); //make id as object
+            console.log(id)
             collection.find({ _id: id }).toArray(function (err, data) {
                 if (err || data.length == 0) {
+                    console.log(data)
                     res.send({ status: "failed" });
                 }
                 else {
