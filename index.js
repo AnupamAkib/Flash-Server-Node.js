@@ -149,7 +149,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                                     price = (diamond / 100) * gaemLogin_USD;
                                 }
                                 price = Math.floor(price);
-                                discount_price = Math.ceil(price - (price * (discount / 100)));
+                                discount_price = Math.ceil(price - discount);
                                 let tmp = {
                                     _id: id,
                                     diamond: diamond,
