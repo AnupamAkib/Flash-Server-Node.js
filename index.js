@@ -267,7 +267,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             )
         })
 
-        app.get("/settings/all", function (req, res) {
+        app.post("/settings/all", function (req, res) {
             var collection = myMongoClient.db("FlashShop").collection("settings");
             collection.find().toArray(function (err, data) {
                 if (err) {
