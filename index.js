@@ -231,6 +231,75 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             })
         })
 
+
+        app.post("/package/special/getAll", function (req, res) {
+            var collection = myMongoClient.db("FlashShop").collection("specialPackage");
+            collection.find().toArray(function (err, packages) {
+                if (err) {
+                    res.send({ status: "failed" });
+                }
+                else {
+                    res.send({ status: "done", result: packages });
+                }
+            })
+        })
+
+        app.post("/package/special/edit", function (req, res) {
+            var collection = myMongoClient.db("FlashShop").collection("specialPackage");
+            let id = new ObjectId(req.body._id); //make id as object
+            let _diamond = req.body.diamond;
+            let _topUp_type = req.body.topUp_type;
+            let _discount = req.body.discount;
+            let _price = req.body.price;
+            collection.updateOne(
+                { _id: id }, //targeted data
+                {
+                    $set: {
+                        diamond: _diamond,
+                        topUp_type: _topUp_type,
+                        discount_amount: _discount,
+                        price: _price
+                    }
+                },
+                function (err, data) {
+                    if (err) {
+                        res.send({ status: "failed" })
+                    }
+                    else {
+                        res.send({ status: "done" })
+                    }
+                }
+            )
+        })
+
+        app.post("/package/special/delete", function (req, res) {
+            var collection = myMongoClient.db("FlashShop").collection("specialPackage");
+            let id = new ObjectId(req.body._id); //make id as object
+            collection.deleteOne(
+                { _id: id }, //targeted data
+                function (err, data) {
+                    if (err) {
+                        res.send({ status: "failed" })
+                    }
+                    else {
+                        res.send({ status: "done" })
+                    }
+                }
+            )
+        })
+
+        app.post("/package/special/create", function (req, res) {
+            const _data = req.body;
+            try {
+                myMongoClient.db("FlashShop").collection("specialPackage").insertOne(_data);
+                res.send({ status: "done" })
+            }
+            catch (e) {
+                console.log(e)
+                res.send({ status: "failed" })
+            }
+        })
+
         /// SETTINGS API ///
 
         app.post("/settings/edit", function (req, res) {
@@ -267,7 +336,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             )
         })
 
-        app.get("/settings/all", function (req, res) {
+        app.post("/settings/all", function (req, res) {
             var collection = myMongoClient.db("FlashShop").collection("settings");
             collection.find().toArray(function (err, data) {
                 if (err) {
