@@ -724,6 +724,24 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             )
         })
 
+        app.post("/SEC/getAllEmployee", function (req, res) {
+            var collection = myMongoClient.db("SEC").collection("employee");
+            collection.find().toArray(function (err, data) {
+                if (err) {
+                    console.log("Error selecting data");
+                    res.send({ result: "failed" });
+                }
+                else {
+                    if (data.length == 0) {
+                        res.send({ result: "no employee" });
+                    }
+                    else {
+                        res.send({ result: "found", data });
+                    }
+                }
+            })
+        })
+
         let prevData = [];
         app.post("/SEC/editAttendanceIndividual", function (req, res) {
             let empID = req.body.empID;
@@ -749,6 +767,58 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     }
                 )
             })
+        })
+
+        app.post("/SEC/change_Password", function (req, res) {
+            let empID = req.body.empID;
+            let new_password = req.body.new_password;
+
+            myMongoClient.db("SEC").collection("employee").updateOne(
+                { empID: empID }, //targeted data
+                {
+                    $set: {
+                        password: new_password
+                    }
+                },
+                function (err, r) {
+                    res.send({ result: "done" });
+                }
+            )
+        })
+
+        app.post("/SEC/showRoomLocation", function (req, res) {
+            var collection = myMongoClient.db("SEC").collection("admin");
+            collection.find().toArray(function (err, data) {
+                if (err) {
+                    console.log("Error selecting data");
+                    res.send({ result: "failed" });
+                }
+                else {
+                    res.send(data);
+                }
+            })
+        })
+
+        app.post("/SEC/change_showroom_location", function (req, res) {
+            let latitude = req.body.latitude;
+            let longitude = req.body.longitude;
+            let range = req.body.range;
+            var ObjectId = require('mongodb').ObjectId;
+            let id = new ObjectId(req.body.id);
+
+            myMongoClient.db("SEC").collection("admin").updateOne(
+                { _id: id }, //targeted data
+                {
+                    $set: {
+                        latitude: latitude,
+                        longitude: longitude,
+                        range: range
+                    }
+                },
+                function (err, r) {
+                    res.send({ result: "done" });
+                }
+            )
         })
     }
 })
