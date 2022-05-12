@@ -569,7 +569,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     //comment it out if not nessessary
                     for (let i = 1; i < day - 1; i++) {
                         if (data[0].status[i - 1] != "-" && data[0].status[i] == "-" && data[0].status[i + 1] != "-" && getWeekDay(i + 1, month, year) == dayOff) {
-                            data[0].status[i] = "Day off";
+                            data[0].status[i] = "Day Off";
                         }
                     }
 
