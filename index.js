@@ -644,10 +644,17 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     res.send({ result: "failed" });
                 }
                 else {
-                    //res.send({ result: "done", month: month + ", " + year, data: data });
                     if (data.length != 0) {
                         if (data[0].password == password) {
-                            res.send({ result: "done", empName: data[0].empName, dayOff: data[0].dayOff });
+                            res.send({
+                                result: "done",
+                                empName: data[0].empName,
+                                dayOff: data[0].dayOff,
+                                showroom_name: data[0].showroom_name,
+                                latitude: data[0].latitude,
+                                longitude: data[0].longitude,
+                                range: data[0].range
+                            });
                         }
                         else {
                             res.send({ result: "not matched" });
@@ -665,6 +672,11 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             let empID = req.body.empID;
             let password = req.body.password;
             let dayOff = req.body.dayOff;
+            let showroom_name = req.body.showroom_name;
+            let latitude = req.body.latitude;
+            let longitude = req.body.longitude;
+            let range = req.body.range;
+
             var collection = myMongoClient.db("SEC").collection("employee");
             collection.find({ empID: empID }).toArray(function (err, data) {
                 if (err) {
@@ -675,7 +687,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     if (data.length == 0) {
                         //add
                         let employeeData = {
-                            empName, empID, password, dayOff
+                            empName, empID, password, dayOff, showroom_name, latitude, longitude, range
                         }
                         myMongoClient.db("SEC").collection("employee").insertOne(employeeData);
                         res.send({ result: "done", empID });
@@ -692,6 +704,10 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
             let empID = req.body.empID;
             let password = req.body.password;
             let dayOff = req.body.dayOff;
+            let showroom_name = req.body.showroom_name;
+            let latitude = req.body.latitude;
+            let longitude = req.body.longitude;
+            let range = req.body.range;
 
             myMongoClient.db("SEC").collection("employee").updateOne(
                 { empID: empID }, //targeted data
@@ -699,11 +715,15 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     $set: {
                         empName: empName,
                         password: password,
-                        dayOff: dayOff
+                        dayOff: dayOff,
+                        showroom_name: showroom_name,
+                        latitude: latitude,
+                        longitude: longitude,
+                        range: range
                     }
                 },
                 function (err, r) {
-                    res.send({ empName, empID, password, dayOff });
+                    res.send({ empName, empID, password, dayOff, showroom_name, latitude, longitude, range });
                 }
             )
         })
