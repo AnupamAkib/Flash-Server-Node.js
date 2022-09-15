@@ -840,6 +840,31 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                 }
             )
         })
+        
+        app.post("/SEC/add_activity", function (req, res) {
+            const _data = req.body;
+            try {
+                myMongoClient.db("SEC").collection("activity").insertOne(_data);
+                res.send({ result: "done" })
+            }
+            catch (e) {
+                console.log(e)
+                res.send({ result: "failed" })
+            }
+        })
+
+        app.post("/SEC/view_activity", function (req, res) {
+            var collection = myMongoClient.db("SEC").collection("activity");
+            collection.find().toArray(function (err, data) {
+                if (err) {
+                    console.log("Error selecting data");
+                    res.send({ result: "failed" });
+                }
+                else {
+                    res.send(data);
+                }
+            })
+        })
     }
 })
 
