@@ -871,7 +871,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
 
         //----------- diu library service email------------
 
-        app.post("/library/send_mail", function (req, res) {
+        app.get("/library/send_mail", function (req, res) {
             /*var _to = req.body.sendTo;
             var _subject = req.body.subject;
             var _body = req.body.emailBody;
