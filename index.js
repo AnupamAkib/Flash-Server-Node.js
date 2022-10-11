@@ -871,8 +871,8 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
 
         //----------- diu library service email------------
 
-        app.get("/library/send_mail", function (req, res) {
-            /*var _to = req.body.sendTo;
+        app.post("/library/send_mail", function (req, res) {
+            var _to = req.body.sendTo;
             var _subject = req.body.subject;
             var _body = req.body.emailBody;
 
@@ -898,8 +898,7 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                 } else {
                     res.send({ result: "success" });
                 }
-            });*/
-            res.send({ result: "hoise" });
+            });
         })
 
     }
