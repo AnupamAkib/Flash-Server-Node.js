@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(multer.array()); //for parsing multiple/form-data
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, function () {
     console.log("Server Started");
@@ -839,6 +839,66 @@ MongoClient.connect(URL, config, function (err, myMongoClient) {
                     res.send({ result: "done" });
                 }
             )
+        })
+
+        app.post("/SEC/add_activity", function (req, res) {
+            const _data = req.body;
+            try {
+                myMongoClient.db("SEC").collection("activity").insertOne(_data);
+                res.send({ result: "done" })
+            }
+            catch (e) {
+                console.log(e)
+                res.send({ result: "failed" })
+            }
+        })
+
+        app.post("/SEC/view_activity", function (req, res) {
+            var collection = myMongoClient.db("SEC").collection("activity");
+            collection.find().toArray(function (err, data) {
+                if (err) {
+                    console.log("Error selecting data");
+                    res.send({ result: "failed" });
+                }
+                else {
+                    res.send(data);
+                }
+            })
+        })
+
+
+
+
+        //------------ DIU Library Service (email API) ---------------
+
+        app.post("/library/send_mail", function (req, res) {
+            var _to = req.body.sendTo;
+            var _subject = req.body.subject;
+            var _body = req.body.emailBody;
+
+            const nodemailer = require('nodemailer');
+            let mailTransporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'diu.library.service@gmail.com',
+                    pass: 'kduvqkzrvdkljvad'
+                }
+            });
+            
+            let mailDetails = {
+                from: '"DIU Library Service" <diu.library.service@gmail.com>',
+                to: _to,
+                subject: _subject,
+                html: _body
+            };
+            
+            mailTransporter.sendMail(mailDetails, function(err, data) {
+                if(err) {
+                    res.send({ result: "failed" });
+                } else {
+                    res.send({ result: "success" });
+                }
+            });
         })
     }
 })
